@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
-
-const Buttons = ({ state, handleBtn }) => (
-  <>
-    {Object.keys(state).map(el => (
-      <button key={el} onClick={() => handleBtn(el)}>
-        {el}
-      </button>
-    ))}
-  </>
-);
+import { Buttons } from 'components/Buttons';
 
 export class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    good: 5,
+    neutral: 2,
+    bad: 3,
   };
   handleBtn = value => {
     this.setState({
@@ -23,13 +14,36 @@ export class App extends Component {
     console.log('this.state :>> ', this.state);
   };
 
+  countTotalFeedback = () =>
+    Object.values(this.state).reduce((acc, number) => {
+      return acc + number;
+    }, 0);
+  countPositiveFeedbackPercentage = () => {
+    const factor = this.countTotalFeedback() / this.state.good;
+    const resultPercentages = 100 / factor;
+    return Math.round(resultPercentages);
+  };
+
   render() {
     return (
       <>
         <p>Please leave feedback</p>
-        <Buttons state={this.state} handleBtn={this.handleBtn}></Buttons>
+        <Buttons state={this.state} handleBtn={this.handleBtn} />
 
-        {/* <button onClick={this.good}>Show</button> */}
+        <p>Statistics</p>
+        {Object.entries(this.state).map(el => {
+          return (
+            <span key={el[0]}>
+              {el[0]}: {el[1]}
+            </span>
+          );
+        })}
+
+        <span>Total: {this.countTotalFeedback()}</span>
+        <span>
+          Positive Feedback:
+          {this.countPositiveFeedbackPercentage()}%
+        </span>
       </>
     );
   }
