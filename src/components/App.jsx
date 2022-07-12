@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { Buttons } from 'components/Buttons';
+import PropTypes from 'prop-types';
+import style from './Options.module.css';
+
+import { FeedbackOptions } from 'components/FeedbackOptions';
+import { Statistics } from 'components/Statistics';
+import { Notification } from 'components/Notification';
+import { Section } from 'components/Section';
 
 export class App extends Component {
   state = {
-    good: 5,
-    neutral: 2,
-    bad: 3,
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
   handleBtn = value => {
     this.setState({
@@ -26,25 +32,33 @@ export class App extends Component {
 
   render() {
     return (
-      <>
-        <p>Please leave feedback</p>
-        <Buttons state={this.state} handleBtn={this.handleBtn} />
+      <div className={style.container}>
+        <Section title="Please leave feedback">
+          <FeedbackOptions state={this.state} handleBtn={this.handleBtn} />
+          <h3>Statistics</h3>
 
-        <p>Statistics</p>
-        {Object.entries(this.state).map(el => {
-          return (
-            <span key={el[0]}>
-              {el[0]}: {el[1]}
-            </span>
-          );
-        })}
-
-        <span>Total: {this.countTotalFeedback()}</span>
-        <span>
-          Positive Feedback:
-          {this.countPositiveFeedbackPercentage()}%
-        </span>
-      </>
+          {this.countTotalFeedback() ? (
+            <Statistics
+              allStates={this.state}
+              countTotalFeedback={this.countTotalFeedback()}
+              positivePercentage={this.countPositiveFeedbackPercentage()}
+            />
+          ) : (
+            <Notification message="There is no feedback" />
+          )}
+        </Section>
+      </div>
     );
   }
 }
+
+FeedbackOptions.propTypes = {
+  state: PropTypes.object,
+  handleBtn: PropTypes.func,
+};
+
+Statistics.propTypes = {
+  allStates: PropTypes.object,
+  countTotalFeedback: PropTypes.number,
+  positivePercentage: PropTypes.number,
+};
