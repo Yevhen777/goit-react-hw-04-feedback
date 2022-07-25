@@ -9,6 +9,7 @@ import { Section } from 'components/Section';
 
 export class App extends Component {
   state = {
+    cons: {},
     good: 0,
     neutral: 0,
     bad: 0,
